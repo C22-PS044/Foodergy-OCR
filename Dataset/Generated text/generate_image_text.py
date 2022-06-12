@@ -2,6 +2,8 @@ import numpy as np
 import string
 from PIL import Image, ImageFont, ImageDraw
  
+type = 'test'
+
 def MakeImg(t, f, fn, s = (100, 100), o = (16, 8)):
     '''
     Generate an image of text
@@ -11,16 +13,21 @@ def MakeImg(t, f, fn, s = (100, 100), o = (16, 8)):
     s:      The image size
     o:      The offest of the text in the image
     '''
+
+    type_path = {'test': 'Dataset\Generated text\Test/',
+            'train': 'Dataset\Generated text\Train/'}
+
     img = Image.new('RGB', s, "black")
     draw = ImageDraw.Draw(img)
     draw.text(OFS, t, (255, 255, 255), font = f)
-    img.save(fn)
+    img.save(type_path[type] + fn)
  
 #The possible characters to use
-CS = list(string.ascii_letters) + list(string.digits)
+CS = list(string.ascii_letters) #+ list(string.digits)
 RTS = list(np.random.randint(10, 64, size = 8192)) + [64]
 #The random strings
 S = [''.join(np.random.choice(CS, i)) for i in RTS]
+
 #Get the font
 font = ImageFont.truetype("LiberationMono-Regular.ttf", 16)
 #The largest size needed
@@ -34,5 +41,7 @@ for i, Si in enumerate(S):
     MakeImg(Si, font, str(i) + '.png', MS, OFS)
     Y.append(str(i) + '.png,' + Si)
 #Write CSV file
-with open('Test.csv', 'w') as F:
+type_file = {'test': 'Dataset\Generated text\Test\Test.csv',
+            'train': 'Dataset\Generated text\Train\Train.csv'}
+with open(type_file[type], 'w') as F:
     F.write('\n'.join(Y))
